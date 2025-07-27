@@ -1,0 +1,25 @@
+/* Terminals */
+KeywordFn        ::= "fn"
+KeywordReturn    ::= "return"
+
+Identifier       ::= Letter (Letter | Digit | "_")*
+NumberLiteral    ::= Digit+
+
+LParen           ::= "("
+RParen           ::= ")"
+LBrace           ::= "{"
+RBrace           ::= "}"
+Semicolon        ::= ";"
+
+Letter           ::= [a-zA-Z]
+Digit            ::= [0-9]
+
+/* Non-Terminals */
+
+Program ::= Function
+
+Function ::= KeywordFn Identifier LParen RParen Identifier Block
+
+Block ::= LBrace Statement* RBrace
+
+Statement ::= KeywordReturn NumberLiteral Semicolon
