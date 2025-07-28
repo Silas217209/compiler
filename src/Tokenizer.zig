@@ -1,8 +1,13 @@
 const std = @import("std");
 
+pub const Loc = struct {
+    start: u32,
+    end: u32,
+};
+
 pub const Token = struct {
     tag: Tag,
-    lexeme: []const u8,
+    loc: Loc,
 
     pub const Tag = enum {
         invalid,
@@ -53,27 +58,28 @@ pub fn next(self: *Tokenizer) Token {
         number_literal,
     };
 
-    var start = self.index;
-
     var result = Token{
         .tag = .invalid,
-        .lexeme = undefined,
+        .loc = .{
+            .start = self.index,
+            .end = undefined,
+        },
     };
 
     state: switch (State.start) {
         .start => switch (self.buf[self.index]) {
             0 => {
                 if (self.buf.len == self.index) {
-                    return .{
-                        .tag = .eof,
-                        .lexeme = &.{},
-                    };
+                    return .{ .tag = .eof, .loc = .{
+                        .start = self.index,
+                        .end = self.index,
+                    } };
                 }
                 continue :state .invalid;
             },
             ' ', '\n', '\t', '\r' => {
                 self.index += 1;
-                start = self.index;
+                result.loc.start = self.index;
                 continue :state .start;
             },
             '0'...'9' => {
@@ -111,7 +117,7 @@ pub fn next(self: *Tokenizer) Token {
             switch (self.buf[self.index]) {
                 'a'...'z', 'A'...'Z', '_', '0'...'9' => continue :state .identifier,
                 else => {
-                    const text = self.buf[start..self.index];
+                    const text = self.buf[result.loc.start..self.index];
                     if (Token.getKeyword(text)) |tag| {
                         result.tag = tag;
                     }
@@ -136,7 +142,7 @@ pub fn next(self: *Tokenizer) Token {
         },
     }
 
-    result.lexeme = self.buf[start..self.index];
+    result.loc.end = self.index;
     return result;
 }
 

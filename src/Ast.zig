@@ -1,33 +1,60 @@
 const std = @import("std");
-
-pub const NodeTag = enum {
-    function_decl,
-    return_stmt,
-    int_literal,
-    block,
-    identifier,
-};
+const Loc = @import("Tokenizer.zig").Loc;
 
 pub const Identifier = struct {
-    name: []const u8,
+    loc: Loc,
+
+    pub fn dump(self: *Identifier, comptime level: i32) void {
+        const indent = "\t" ** level;
+        std.debug.print("{s}Identifier: [{d}..{d}]\n", .{ indent, self.loc.start, self.loc.end });
+    }
 };
 
 pub const IntLiteral = struct {
     value: i32,
+
+    pub fn dump(self: *IntLiteral, comptime level: i32) void {
+        const indent = "\t" ** level;
+        std.debug.print("{s}IntLiteral: {d}\n", .{ indent, self.value });
+    }
 };
 
 pub const ReturnStmt = struct {
     expr: *IntLiteral,
+
+    pub fn dump(self: *ReturnStmt, comptime level: i32) void {
+        const indent = "\t" ** level;
+        std.debug.print("{s}ReturnStmt\n", .{indent});
+        self.expr.dump(level + 1);
+    }
 };
 
 pub const Block = struct {
     statements: []const *ReturnStmt,
+
+    pub fn dump(self: *Block, comptime level: i32) void {
+        const indent = "\t" ** level;
+        std.debug.print("{s}Block:\n", .{indent});
+
+        for (self.statements) |statement| {
+            statement.dump(level + 1);
+        }
+    }
 };
 
 pub const FunctionDecl = struct {
     name: *Identifier,
     return_type: *Identifier,
     body: *Block,
+
+    pub fn dump(self: *FunctionDecl, comptime level: i32) void {
+        const indent = "\t" ** level;
+        std.debug.print("{s}FunctionDecl:\n", .{indent});
+
+        self.name.dump(level + 1);
+        self.return_type.dump(level + 1);
+        self.body.dump(level + 1);
+    }
 };
 
 pub const RootNode = FunctionDecl;

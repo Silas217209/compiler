@@ -23,7 +23,7 @@ pub fn main() !void {
     var tokenizer = Tokenizer.init(source);
     const tokens = try tokenizer.tokenize(tokens_allocator);
 
-    var parser = Parser.init(ast_allocator, tokens);
+    var parser = Parser.init(ast_allocator, source, tokens);
     const rootnode = try parser.parse();
-    std.debug.print("{*}\n", .{rootnode});
+    rootnode.dump(0);
 }

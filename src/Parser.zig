@@ -4,14 +4,16 @@ const AST = @import("Ast.zig");
 
 const Token = Tokenizer.Token;
 
+source: [:0]const u8,
 tokens: std.MultiArrayList(Token),
 pos: u32,
 allocator: std.mem.Allocator,
 
 const Self = @This();
 
-pub fn init(allocator: std.mem.Allocator, tokens: std.MultiArrayList(Token)) Self {
+pub fn init(allocator: std.mem.Allocator, source: [:0]const u8, tokens: std.MultiArrayList(Token)) Self {
     return .{
+        .source = source,
         .allocator = allocator,
         .tokens = tokens,
         .pos = 0,
@@ -67,9 +69,12 @@ fn parseBlock(self: *Self) !*AST.Block {
     const statement = try self.parseStatement();
     _ = try self.expect(.r_brace);
 
+    const stmts = try self.allocator.alloc(*AST.ReturnStmt, 1);
+    stmts[0] = statement;
+
     const node = try self.allocator.create(AST.Block);
     node.* = .{
-        .statements = &.{statement},
+        .statements = stmts,
     };
 
     return node;
@@ -90,8 +95,7 @@ pub fn parseStatement(self: *Self) !*AST.ReturnStmt {
 
 pub fn parseIntLiteral(self: *Self) !*AST.IntLiteral {
     const number = try self.expect(.number_literal);
-    const text = number.lexeme;
-    const integer = try std.fmt.parseInt(i32, text, 10);
+    const integer = try std.fmt.parseInt(i32, self.source[number.loc.start..number.loc.end], 10);
 
     const node = try self.allocator.create(AST.IntLiteral);
     node.* = .{ .value = integer };
@@ -104,7 +108,7 @@ fn parseIdentifier(self: *Self) !*AST.Identifier {
 
     const node = try self.allocator.create(AST.Identifier);
     node.* = .{
-        .name = identifier.lexeme,
+        .loc = identifier.loc,
     };
 
     return node;
