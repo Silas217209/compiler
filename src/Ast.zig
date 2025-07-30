@@ -19,8 +19,21 @@ pub const IntLiteral = struct {
     }
 };
 
+pub const BinaryOperator = enum {
+    add,
+};
+
+pub const Expression = union(enum) {
+    number: *IntLiteral,
+    binary: struct {
+        operator: BinaryOperator,
+        lhs: *Expression,
+        rhs: *Expression,
+    },
+};
+
 pub const ReturnStmt = struct {
-    expr: *IntLiteral,
+    expr: *Expression,
 
     pub fn dump(self: *ReturnStmt, comptime level: i32) void {
         const indent = "\t" ** level;

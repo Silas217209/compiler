@@ -1,25 +1,30 @@
 /* Terminals */
 KeywordFn        ::= "fn"
 KeywordReturn    ::= "return"
-
+OperatorPlus     ::= "+"
 Identifier       ::= Letter (Letter | Digit | "_")*
-NumberLiteral    ::= Digit+
-
+IntLiteral    ::= Digit+
 LParen           ::= "("
 RParen           ::= ")"
 LBrace           ::= "{"
 RBrace           ::= "}"
 Semicolon        ::= ";"
 
+BinaryOperator    ::=  "+"
+
 Letter           ::= [a-zA-Z]
 Digit            ::= [0-9]
 
 /* Non-Terminals */
 
-Program ::= Function
+Program          ::= Function
 
-Function ::= KeywordFn Identifier LParen RParen Identifier Block
+Function         ::= KeywordFn Identifier LParen RParen Identifier Block
 
-Block ::= LBrace Statement* RBrace
+Block            ::= LBrace Statement* RBrace
 
-Statement ::= KeywordReturn NumberLiteral Semicolon
+Statement        ::= ReturnStatement
+
+ReturnStatement  ::= KeywordReturn Expression Semicolon
+
+Expression       ::= IntLiteral | (Expression BinaryOperator Expression)
