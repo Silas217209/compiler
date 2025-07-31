@@ -80,6 +80,21 @@ fn parseBlock(self: *Self) !*AST.Block {
     return node;
 }
 
+fn parseExpression(self: *Self) !*AST.Expression {
+    const number = try self.parseIntLiteral();
+    const next_token = self.peek() orelse return error.UnexpectedEOF;
+
+    const node = try self.allocator.create(AST.Expression);
+
+    if (next_token != .operator_plus) {
+        node.* = .{
+            .number = number,
+        };
+
+        return node;
+    }
+}
+
 pub fn parseStatement(self: *Self) !*AST.ReturnStmt {
     _ = try self.expect(.keyword_return);
     const int_literal = try self.parseIntLiteral();

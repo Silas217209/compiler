@@ -27,4 +27,4 @@ Statement        ::= ReturnStatement
 
 ReturnStatement  ::= KeywordReturn Expression Semicolon
 
-Expression       ::= IntLiteral | (Expression BinaryOperator Expression)
+Expression       ::= IntLiteral | (Expression BinaryOperator Expression)*
