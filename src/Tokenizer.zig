@@ -18,8 +18,6 @@ pub const Token = struct {
         identifier,
         number_literal,
 
-        operator_plus,
-
         l_paren,
         r_paren,
         l_brace,
@@ -110,10 +108,6 @@ pub fn next(self: *Tokenizer) Token {
             },
             ';' => {
                 result.tag = .semicolon;
-                self.index += 1;
-            },
-            '+' => {
-                result.tag = .operator_plus;
                 self.index += 1;
             },
             else => continue :state .invalid,

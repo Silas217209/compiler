@@ -10,8 +10,6 @@ LBrace           ::= "{"
 RBrace           ::= "}"
 Semicolon        ::= ";"
 
-BinaryOperator    ::=  "+"
-
 Letter           ::= [a-zA-Z]
 Digit            ::= [0-9]
 
@@ -25,6 +23,4 @@ Block            ::= LBrace Statement* RBrace
 
 Statement        ::= ReturnStatement
 
-ReturnStatement  ::= KeywordReturn Expression Semicolon
-
-Expression       ::= IntLiteral | (Expression BinaryOperator Expression)*
+ReturnStatement  ::= KeywordReturn IntLiteral Semicolon
