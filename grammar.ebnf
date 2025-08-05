@@ -3,7 +3,7 @@ KeywordFn        ::= "fn"
 KeywordReturn    ::= "return"
 OperatorPlus     ::= "+"
 Identifier       ::= Letter (Letter | Digit | "_")*
-IntLiteral    ::= Digit+
+IntLiteral       ::= Digit+
 LParen           ::= "("
 RParen           ::= ")"
 LBrace           ::= "{"
@@ -12,6 +12,8 @@ Semicolon        ::= ";"
 
 Letter           ::= [a-zA-Z]
 Digit            ::= [0-9]
+
+BinaryOperator   ::= OperatorPlus
 
 /* Non-Terminals */
 
@@ -23,4 +25,6 @@ Block            ::= LBrace Statement* RBrace
 
 Statement        ::= ReturnStatement
 
-ReturnStatement  ::= KeywordReturn IntLiteral Semicolon
+ReturnStatement  ::= KeywordReturn Expression Semicolon
+
+Expression       ::= IntLiteral (BinaryOperator IntLiteral)*

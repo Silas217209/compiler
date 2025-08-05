@@ -1,3 +1,3 @@
 fn main() i32 {
-    return 42;
+    return 42 + 15;
 }
